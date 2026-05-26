@@ -451,6 +451,20 @@ std::unique_ptr<ProtoMesh> Resources::implLoadMeshMain(std::string name) {
     auto reader = entry->open_read();
     zmsh.load(reader.get(),false);
 
+    if(zmsh.polygons.vertex_indices.empty() && !zmsh.polygon_vertex_indices.empty()) {
+      zmsh.polygons.vertex_indices  = std::move(zmsh.polygon_vertex_indices);
+      zmsh.polygons.feature_indices = std::move(zmsh.polygon_feature_indices);
+
+      zmsh.polygons.material_indices.reserve(zmsh.geometry.size());
+      zmsh.polygons.lightmap_indices.reserve(zmsh.geometry.size());
+      zmsh.polygons.flags.reserve(zmsh.geometry.size());
+      for(auto& i:zmsh.geometry) {
+        zmsh.polygons.material_indices.push_back(i.material);
+        zmsh.polygons.lightmap_indices.push_back(i.lightmap);
+        zmsh.polygons.flags.push_back(i.flags);
+        }
+      }
+
     if(zmsh.polygons.vertex_indices.empty())
       return nullptr;
 
