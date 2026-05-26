@@ -418,8 +418,16 @@ void World::initG1Barrier() {
   barrier.visual.setObjMatrix(identity);
   barrier.physic.setObjMatrix(identity);
 
-  if(barrier.visual.isEmpty() && barrier.physic.isEmpty())
+  if(barrier.visual.isEmpty() && barrier.physic.isEmpty()) {
+    Tempest::Log::e("G1 magic barrier is empty");
     return;
+    }
+
+  if(barrier.visual.isEmpty())
+    Tempest::Log::e("G1 magic barrier visual is empty");
+
+  if(barrier.physic.isEmpty())
+    Tempest::Log::e("G1 magic barrier physics is empty; using boundary clamp only");
 
   g1Barrier.reset(new G1Barrier(std::move(barrier)));
   }
